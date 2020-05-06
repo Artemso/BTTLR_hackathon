@@ -20,6 +20,6 @@ translation.json
 *.toc
 *.wav
 *.sh
-encoder/saved_models/*
-synthesizer/saved_models/*
-vocoder/saved_models/*
+RTVC_CPU/encoder/saved_models/*
+RTVC_CPU/synthesizer/saved_models/*
+RTVC_CPU/vocoder/saved_models/*
