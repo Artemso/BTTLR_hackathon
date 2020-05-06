@@ -1,22 +1,26 @@
-const { Translate } = require('@google-cloud/translate').v2;
-
 class TextToSpeech {
-	constructor() {
-		this.outputLanguage = 'en-US';
+	constructor(translateClient) {
+		this.outputLanguage = 'en';
+		this.client = translateClient;
 	}
 
 	async translate(transcript) {
-		const translator = new Translate();
-		let [translations] = await translator.translate(
-			transcript,
-			this.outputLanguage
-		);
-		translations = Array.isArray(translations) ? translations : [translations];
-		translations.forEach((translation, i) => {
-			console.log(
-				`${transcript[i]} => (${this.outputLanguage}) ${translation}`
+		try {
+			let [translations] = await this.client.translate(
+				transcript,
+				this.outputLanguage
 			);
-		});
+			translations = Array.isArray(translations)
+				? translations
+				: [translations];
+			translations.forEach((translation, i) => {
+				console.log(`${transcript} => (${this.outputLanguage}) ${translation}`);
+			});
+		} catch (error) {
+			if (error && error.response && error.response.body) {
+				console.error(error.response.body);
+			}
+		}
 	}
 
 	setOutputLanguage(language) {
