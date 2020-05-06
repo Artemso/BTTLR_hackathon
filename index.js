@@ -1,6 +1,6 @@
 const fs = require('fs');
 const speech = require('@google-cloud/speech');
-const speechToText = require('./speechToText.js');
+const listenSpeech = require('./speechToText.js');
 const TextToSpeech = require('./textToSpeech.js');
 const { Translate } = require('@google-cloud/translate').v2;
 
@@ -10,19 +10,17 @@ const arguments = process.argv.slice(2);
 const translateClient = new Translate({
 	credentials,
 });
-
-const textToSpeech = new TextToSpeech(translateClient);
-if (arguments[0]) textToSpeech.setOutputLanguage(arguments[0]);
-
 const speechClient = new speech.SpeechClient({
 	credentials,
 });
 
-const speechToTextInputs = {
+const options = {
 	client: speechClient,
 	mainLanguage: 'en-US',
 	altenrativeLanguages: ['fi-FI', 'en-US'],
-	textToSpeech,
+	textToSpeech: new TextToSpeech(translateClient),
 };
 
-speechToText(speechToTextInputs);
+if (arguments[0]) options.textToSpeech.setOutputLanguage(arguments[0]);
+
+listenSpeech(options);
