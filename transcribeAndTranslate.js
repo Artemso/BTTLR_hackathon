@@ -29,12 +29,13 @@ async function transcribeAndTranslate({
 		//Map each transcribed sentence to their translation
 		const transcription = async () =>
 			Promise.all(
-				response.results.map(async (result) => {
+				response.results.map(async (result, index) => {
 					const translation = await translator.translate(
 						result.alternatives[0].transcript
 					);
 					return {
-						transcript: result.alternatives[0].transcript,
+						index,
+						translation: translation,
 						//Out of all word timestamps, just find max and min for endTime and startTime
 						//So we know beginning of the text part and its end
 						startTime: result.alternatives[0].words.reduce(
