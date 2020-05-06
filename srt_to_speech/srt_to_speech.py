@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+#Python 3.7
 from gtts import gTTS
 from pydub import AudioSegment
 from pydub.playback import play
