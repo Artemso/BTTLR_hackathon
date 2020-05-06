@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const fs = require('fs');
 const speech = require('@google-cloud/speech');
 const transcribeAndTranslate = require('./transcribeAndTranslate.js');
