@@ -1,7 +1,7 @@
 # Speech To Text
 
 
-## Usage
+## Before first use
 ```
 git clone git@github.com:Artemso/BTTLR_hackathon.git bttlr_hackathon
 cd bttlr_hackathon
@@ -22,12 +22,15 @@ brew install sox
 
 #### Linux install sox & node
 ```
+# Install sox https://at.projects.genivi.org/wiki/display/PROJ/Installation+of+SoX+on+different+Platforms
 # Install NVM https://github.com/nvm-sh/nvm#install--update-script
 nvm install node
 nvm use node
 ```
 
+## Usage
 ```
 npm install
-node index.js [OUTPUTLANGUAGE: e.g. fi, cs, en]
+node index.js [outputLanguage: e.g. fi, cs, ]
+# node index.js fi
 ```
