@@ -17,7 +17,7 @@ const speechClient = new speech.SpeechClient({
 const options = {
 	client: speechClient,
 	mainLanguage: 'en-US',
-	altenrativeLanguages: ['fi-FI', 'en-US'],
+	alternativeLanguages: ['fi-FI', 'en-US'],
 	textToSpeech: new Translator(translateClient),
 };
 
