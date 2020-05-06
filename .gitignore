@@ -1,3 +1,8 @@
+.vscode
+.idea
+node_modules
+credentials.json
+translation.json
 *.pyc
 *.aux
 *.log
