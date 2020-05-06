@@ -1,6 +1,6 @@
 const fs = require('fs');
 const speech = require('@google-cloud/speech');
-const listenSpeech = require('./listenSpeech.js');
+const transcribeAndTranslate = require('./transcribeAndTranslate.js');
 const Translator = require('./translator.js');
 const { Translate } = require('@google-cloud/translate').v2;
 
@@ -14,13 +14,29 @@ const speechClient = new speech.SpeechClient({
 	credentials,
 });
 
-const options = {
-	client: speechClient,
-	mainLanguage: 'en-US',
-	alternativeLanguages: ['fi-FI', 'en-US'],
-	textToSpeech: new Translator(translateClient),
-};
-
-if (arguments[0]) options.textToSpeech.setOutputLanguage(arguments[0]);
-
-listenSpeech(options);
+if (arguments.length > 0) {
+	let file;
+	let filename = arguments[0];
+	let sampleRateHertz = arguments[1];
+	try {
+		file = fs.readFileSync(filename).toString('base64');
+		const audio = {
+			content: file,
+		};
+		const options = {
+			client: speechClient,
+			audio,
+			sampleRateHertz: sampleRateHertz ? sampleRateHertz : 16000,
+			mainLanguage: 'en-US',
+			alternativeLanguages: ['fi-FI', 'en-US'],
+			translator: new Translator(translateClient),
+		};
+		if (arguments[2]) options.translator.setOutputLanguage(arguments[2]);
+		console.log(
+			`Translating ${filename} at ${sampleRateHertz} to ${options.translator.outputLanguage}`
+		);
+		transcribeAndTranslate(options);
+	} catch (error) {
+		console.error(`Wrong file given: ${error}`);
+	}
+}
