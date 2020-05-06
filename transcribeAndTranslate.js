@@ -31,7 +31,7 @@ async function transcribeAndTranslate({
 	client,
 	audio,
 	sampleRateHertz,
-	mainLanguage,
+	inputLanguage,
 	alternativeLanguages,
 	translator,
 }) {
@@ -42,11 +42,12 @@ async function transcribeAndTranslate({
 				// with ffmpeg to .flac file
 				encoding: 'FLAC',
 				sampleRateHertz,
-				languageCode: mainLanguage,
-				alternativeLanguageCodes: alternativeLanguages,
+				languageCode: inputLanguage,
 				enableWordTimeOffsets: true,
+				enableAutomaticPunctuation: true,
 			},
 			audio,
+			model: 'default',
 		};
 		// Detects speech in the audio file. This creates a recognition job that you
 		// can wait for now, or get its result later.

@@ -27,13 +27,12 @@ if (arguments.length > 0) {
 			client: speechClient,
 			audio,
 			sampleRateHertz: sampleRateHertz ? parseInt(sampleRateHertz) : 16000,
-			mainLanguage: 'en-US',
-			alternativeLanguages: ['fi-FI', 'en-US'],
+			inputLanguage: arguments[2] ? arguments[2] : 'en-US',
 			translator: new Translator(translateClient),
 		};
-		if (arguments[2]) options.translator.setOutputLanguage(arguments[2]);
+		if (arguments[3]) options.translator.setOutputLanguage(arguments[3]);
 		console.log(
-			`Translating ${filename} at ${sampleRateHertz} to ${options.translator.outputLanguage}`
+			`Translating ${filename} at ${sampleRateHertz} from ${options.inputLanguage} to ${options.translator.outputLanguage}`
 		);
 		transcribeAndTranslate(options);
 	} catch (error) {
