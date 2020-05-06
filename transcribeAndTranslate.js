@@ -8,23 +8,33 @@ async function transcribeAndTranslate({
 	alternativeLanguages,
 	translator,
 }) {
-	const request = {
-		config: {
-			encoding: 'LINEAR16',
-			sampleRateHertz,
-			languageCode: mainLanguage,
-			alternativeLanguageCodes: alternativeLanguages,
-			model: 'video',
-		},
-		audio,
-	};
-	const [response] = await client.recognize(request);
-	console.log(JSON.stringify(response));
-	const transcription = response.results
-		.map((result) => result.alternatives[0].transcript)
-		.join('\n');
-	console.log('Transcription: ', transcription);
-	translator.translate(transcription);
+	try {
+		const request = {
+			config: {
+				encoding: 'LINEAR16',
+				sampleRateHertz,
+				languageCode: mainLanguage,
+				alternativeLanguageCodes: alternativeLanguages,
+				model: 'default',
+			},
+			audio,
+		};
+		// Detects speech in the audio file. This creates a recognition job that you
+		// can wait for now, or get its result later.
+		const [operation] = await client.longRunningRecognize(request);
+
+		// Get a Promise representation of the final result of the job
+		const [response] = await operation.promise();
+		console.log(JSON.stringify(response));
+		const transcription = response.results
+			.map((result) => result.alternatives[0].transcript)
+			.join('\n');
+		console.log(`Transcription: ${transcription}`);
+
+		await translator.translate(transcription);
+	} catch (error) {
+		console.error(error);
+	}
 }
 
 module.exports = transcribeAndTranslate;
