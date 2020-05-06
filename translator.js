@@ -13,9 +13,7 @@ class Translator {
 			translations = Array.isArray(translations)
 				? translations
 				: [translations];
-			translations.forEach((translation, i) => {
-				console.log(`${transcript} => (${this.outputLanguage}) ${translation}`);
-			});
+			return translations.map((translation, i) => translation).join('\n');
 		} catch (error) {
 			if (error && error.response && error.response.body) {
 				console.error(error.response.body);
