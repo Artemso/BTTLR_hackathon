@@ -29,5 +29,5 @@ nvm use node
 
 ```
 npm install
-node index.js
+node index.js [OUTPUTLANGUAGE: e.g. fi-FI]
 ```
