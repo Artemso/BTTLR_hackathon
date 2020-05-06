@@ -1,4 +1,4 @@
-class TextToSpeech {
+class Translator {
 	constructor(translateClient) {
 		this.outputLanguage = 'en';
 		this.client = translateClient;
@@ -28,4 +28,4 @@ class TextToSpeech {
 	}
 }
 
-module.exports = TextToSpeech;
+module.exports = Translator;
