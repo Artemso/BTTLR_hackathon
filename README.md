@@ -39,5 +39,5 @@ ffmpeg -i audio.mp3 audio.flac
 play audio.flac
 
 #Run: node index.js [txtfile: e.g. audio.flac] [sampleRateHerz: e.g. 48000] [inputLanguage: e.g. en-US] [outputLanguage: e.g. fi, cs, en]
-node index.js russian.flac 44100 ru-RU fi
+./index.js russian.flac 44100 ru-RU fi
 ```
