@@ -1,0 +1,20 @@
+[
+  {
+    "index": 0,
+    "translation": "this is text one",
+    "startTime": 0,
+    "endTime": 900000000
+  },
+  {
+    "index": 1,
+    "translation": "this is text two",
+    "startTime": 0,
+    "endTime": 900000000
+  },
+  {
+    "index": 2,
+    "translation": "this is text three",
+    "startTime": 0,
+    "endTime": 900000000
+  }
+]

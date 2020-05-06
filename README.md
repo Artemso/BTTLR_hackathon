@@ -42,9 +42,9 @@ play audio.flac
 ./index.js russian.flac 44100 ru-RU fi
 ```
 
-## Artem is sorry for adding RTVC_CPU (MacOS installation guide written by a monkey):
+# Artem is sorry for adding RTVC_CPU (MacOS installation guide written by a monkey):
 
-# Apparently, should only work with Python3.7
+## Apparently, should only work with Python3.7
 
 The GUI was cut out by a barbarian :D
 
@@ -59,7 +59,7 @@ From google drive you would want to install a pretrained model (trained in engli
 
 From now on, you should be good.
 
-# Usage
+## Usage
 
 you would want to run the program like that (some examples should be provided):
 ```python3 demo_cli.py -vsrc <Voice source> -txt <TEXTFILE in JSON format>```
