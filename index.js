@@ -26,7 +26,7 @@ if (arguments.length > 0) {
 		const options = {
 			client: speechClient,
 			audio,
-			sampleRateHertz: sampleRateHertz ? sampleRateHertz : 16000,
+			sampleRateHertz: sampleRateHertz ? parseInt(sampleRateHertz) : 16000,
 			mainLanguage: 'en-US',
 			alternativeLanguages: ['fi-FI', 'en-US'],
 			translator: new Translator(translateClient),

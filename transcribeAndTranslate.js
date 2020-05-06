@@ -11,11 +11,10 @@ async function transcribeAndTranslate({
 	try {
 		const request = {
 			config: {
-				encoding: 'LINEAR16',
+				encoding: 'FLAC',
 				sampleRateHertz,
 				languageCode: mainLanguage,
 				alternativeLanguageCodes: alternativeLanguages,
-				model: 'default',
 			},
 			audio,
 		};
@@ -25,7 +24,6 @@ async function transcribeAndTranslate({
 
 		// Get a Promise representation of the final result of the job
 		const [response] = await operation.promise();
-		console.log(JSON.stringify(response));
 		const transcription = response.results
 			.map((result) => result.alternatives[0].transcript)
 			.join('\n');

@@ -33,13 +33,11 @@ npm install
 ## Usage
 ```
 # Extract video to audio, (brew install ffmpeg)
-ffmpeg -i audio.mp3 -f s16le -c:a pcm_s16le audio.raw
-# Change audio to text (base64)
-base64 audio.raw > audio.txt
-# Check sample rate
-# try it works play --channels=1 --bits=16 --rate=48000 --encoding=signed-integer \
---endian=little audio.raw
+ffmpeg -i audio.mp3 audio.flac
 
-node index.js [txtfile: e.g. audio.txt] [sampleRateHerz: e.g. 48000] [outputLanguage: e.g. fi, cs, en]
-# node index.js audio.txt 48000 fi
+# Check sample rate & try it works:
+play audio16bit.flac
+
+#Run: node index.js [txtfile: e.g. audio16bit.flac] [sampleRateHerz: e.g. 48000] [outputLanguage: e.g. fi, cs, en]
+node index.js audio16bit.flac 48000 fi
 ```
