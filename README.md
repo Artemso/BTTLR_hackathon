@@ -36,8 +36,8 @@ npm install
 ffmpeg -i audio.mp3 audio.flac
 
 # Check sample rate & try it works:
-play audio16bit.flac
+play audio.flac
 
-#Run: node index.js [txtfile: e.g. audio16bit.flac] [sampleRateHerz: e.g. 48000] [outputLanguage: e.g. fi, cs, en]
-node index.js audio16bit.flac 48000 fi
+#Run: node index.js [txtfile: e.g. audio.flac] [sampleRateHerz: e.g. 48000] [outputLanguage: e.g. fi, cs, en]
+node index.js audio.flac 48000 fi
 ```
