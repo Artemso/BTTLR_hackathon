@@ -3,33 +3,33 @@ const fs = require('fs');
 const _ = require('lodash');
 
 async function translation_chunk(response, translator, startTime) {
-	return Promise.all(
-		response.results.map(async (result, index) => {
-			const translation = await translator.translate(
-				result.alternatives[0].transcript
+	let start = startTime;
+	let translations = [];
+	for (let result of response.results) {
+		const translation = await translator.translate(
+			result.alternatives[0].transcript
+		);
+		const resultStartTime =
+			start +
+			result.alternatives[0].words.reduce(
+				(acc, curr) =>
+					curr.startTime.nanos < acc ? curr.startTime.nanos : acc,
+				0
 			);
-			return {
-				index,
-				translation: translation,
-				//Out of all word timestamps, just find max and min for endTime and startTime
-				//So we know beginning of the text part and its end
-				startTime:
-					startTime +
-					result.alternatives[0].words.reduce(
-						(acc, curr) =>
-							curr.startTime.nanos < acc ? curr.startTime.nanos : acc,
-						0
-					),
-				endTime:
-					startTime +
-					result.alternatives[0].words.reduce(
-						(acc, curr) =>
-							curr.endTime?.nanos > acc ? curr.endTime?.nanos : acc,
-						0
-					),
-			};
-		})
-	);
+		const resultEndTime =
+			start +
+			result.alternatives[0].words.reduce(
+				(acc, curr) => (curr.endTime?.nanos > acc ? curr.endTime?.nanos : acc),
+				0
+			);
+		translations.push({
+			translation: translation,
+			startTime: resultStartTime,
+			endTime: resultEndTime,
+		});
+		start = resultEndTime;
+	}
+	return translations;
 }
 
 async function translation_all({
@@ -40,8 +40,8 @@ async function translation_all({
 	translator,
 }) {
 	let translations = [];
+	let startTime = 0;
 	for (let audio of audioData) {
-		let startTime = 0;
 		const request = {
 			config: {
 				encoding: 'FLAC',
@@ -62,10 +62,12 @@ async function translation_all({
 		// Await a bit to prevent google error for too many requests
 		console.log(`Translating ${audio.name} at ${startTime} ns`);
 		translation = await translation_chunk(response, translator, startTime);
-		startTime = _.last(translation).endTime;
-		translations.push(translation);
+		if (!_.isEmpty(translation)) {
+			startTime = _.last(translation).endTime;
+			translations.push(translation);
+		}
 	}
-	return translations;
+	return _.flatten(translations).map((t, index) => ({ ...t, index }));
 }
 
 async function transcribeAndTranslate(inputData) {
@@ -74,7 +76,7 @@ async function transcribeAndTranslate(inputData) {
 		const outputFilename = 'translation.json';
 		fs.writeFile(
 			outputFilename,
-			JSON.stringify(_.flatten(translations), null, 2),
+			JSON.stringify(translations, null, 2),
 			(err) => {
 				if (err) throw err;
 			}
