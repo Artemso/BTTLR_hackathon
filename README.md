@@ -33,10 +33,18 @@ npm install
 ## Usage
 ```
 # Extract video to audio, (brew install ffmpeg)
-ffmpeg -i audio.mp3 audio.flac
+ffmpeg -i longer.mp3 -ac 1 longer.flac
 
 # Check sample rate & try it works:
-play audio.flac
+play longer.flac
+
+# Split into chunks based on silence, tweak the parameters if needed...
+# https://unix.stackexchange.com/questions/318164/sox-split-audio-on-silence-but-keep-silence
+sox -V3 audio/longer.flac audio/longer_part_.flac \
+silence -l  1 0.3 0.3%   1 0.3 0.3% trim 0 30 : newfile : restart
+
+# Add those files as first argument input to the app in order split by comma:
+# "longer_part_001.flac,longer_part_002.flac,longer_part_003.flac,longer_part_004.flac"
 
 #Run: node index.js [txtfile: e.g. audio.flac] [sampleRateHerz: e.g. 48000] [inputLanguage: e.g. en-US] [outputLanguage: e.g. fi, cs, en]
 ./index.js russian.flac 44100 ru-RU fi
