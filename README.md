@@ -19,6 +19,8 @@ cd RTVC_CPY && pip3 install -r requirements.txt && cd ..
 pip3 install torch torchvision
 # download models from https://drive.google.com/file/d/1n1sPXvT34yXFLT47QZA6FIRGrwMeSsZc/view
 # move those `saved_models` in their corresponding folders to RTVC_CPU
+pip3 install gTTS
+pip3 install pydub
 ```
 
 ## Usage
