@@ -8,7 +8,6 @@ async function translation_chunk(response, translator, startTime) {
 		const translation = await translator.translate(
 			result.alternatives[0].transcript
 		);
-		console.log(result.alternatives[0].words);
 		if (!_.isEmpty(_.last(result.alternatives[0].words))) {
 			const firstWord = _.first(result.alternatives[0].words);
 			const lastWord = _.last(result.alternatives[0].words);
