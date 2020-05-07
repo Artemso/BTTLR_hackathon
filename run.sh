@@ -1,5 +1,7 @@
 #!/bin/bash
 
+OUT_AUDIO = out_audio.flac
+
 FILE=$1
 # First detect samplerate with ffmpeg -i FILENAME
 SAMPLERATE=$2
@@ -28,9 +30,14 @@ if test -f "$FILE"; then
 			# LASTWAVFILENUM=$(ls -A1 ../output | sed -e 's/\.wav$//' | tail -n1)
 			# OUTPUTFILES=../output/{00..$LASTWAVFILENUM}.wav
 			echo "done with output files..."
+			cd ../srt_to_speech
+			if ./combine_speech.py ../translation.json ../output/ $OUT_AUDIO; then
+				cp $OUT_AUDIO ../
+			fi
 			# Remove output files
-			# rm ../output/*
+			rm ../output/*
 			# Only leave final output
+			fi
 		fi
 		cd ..
 	fi

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #Python 3.7
 from gtts import gTTS
 from gtts.lang import tts_langs
