@@ -19,7 +19,6 @@ translation.json
 *.bcf
 *.toc
 *.wav
-*.sh
 RTVC_CPU/encoder/saved_models/*
 RTVC_CPU/synthesizer/saved_models/*
 RTVC_CPU/vocoder/saved_models/*
