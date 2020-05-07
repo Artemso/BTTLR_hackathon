@@ -33,10 +33,8 @@ if test -f "$FILE"; then
 			cd ../srt_to_speech
 			if ./combine_speech.py ../translation.json ../output/ $OUT_AUDIO; then
 				cp $OUT_AUDIO ../
+				rm ../output/*
 			fi
-			# Remove output files
-			rm ../output/*
-			# Only leave final output
 		fi
 		cd ..
 	fi
