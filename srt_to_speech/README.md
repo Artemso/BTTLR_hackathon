@@ -2,7 +2,7 @@
 
 Attempt to recreate audio scene using gTTS and subtitles file (.srt)
 
-## srt-to-speech
+## textrace-to-speech
 ### Requirements
 - python3
 - pydub
@@ -10,3 +10,13 @@ Attempt to recreate audio scene using gTTS and subtitles file (.srt)
 	- Win: [here](https://www.wikihow.com/Install-FFmpeg-on-Windows)
 	- MacOS: brew install ffmpeg
 - gTTS
+
+### Usage
+Run
+```
+./texttrace_to_speech.py <filename> <language>
+```
+supported Languages
+```
+./texttrace_to_speech.py --languages
+```

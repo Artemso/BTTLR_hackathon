@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 #Python 3.7
 from gtts import gTTS
+from gtts.lang import tts_langs
 from pydub import AudioSegment
 from pydub.playback import play
 from pydub.effects import speedup
@@ -8,6 +9,7 @@ from tempfile import TemporaryFile
 import datetime
 import subprocess
 import os
+import sys
 
 # Constants Definition
 SRT_TIME_FORMAT = '%H:%M:%S,%f'
@@ -38,7 +40,7 @@ class TTS_Segment():
 		'''
 		st = datetime.timedelta(seconds=self.start)
 		et = datetime.timedelta(seconds=self.end)
-		s = f"self.sid\n{st} --> {et}\n{self.text}"
+		s = f"{self.sid}\n{st} --> {et}\n{self.text}"
 		return s
 	
 	def __len__(self):
@@ -127,17 +129,46 @@ class TextTrace():
 	def create_out(self, name):
 		result = AudioSegment.empty()
 		for sid in self.segments.keys():
+			print(self.segments[sid])
 			if sid+1 in self.segments.keys():
 				self.segments[sid].adjust_audio_length(self.segments[sid+1].start)
 			result += self.segments[sid].audio
 		result.export(f"{name}.mp3", format="mp3")
 		l = datetime.timedelta(seconds=result.duration_seconds)
-		print(f"Created {name}.mp3")
+		print(f"\nCreated {name}.mp3")
 		print(f"Final leght {l}")
 
-if __name__ == "__main__":
+def usage_exit():
+	executable = os.path.basename(__file__)
+	sys.exit(f"Usage: ./{executable} <filename> <language>\nfile type - \'srt\' or \'json\' at the moment\nlanguage - one of supported language codes, run ./{executable} --languages for more info")
+
+def supported_langs():
+	print(f"Supported Languages")
+	for key, val in tts_langs().items():
+		print(f"{key} : {val}")
+	exit()
+
+def run_srt(filename, lang):
 	print("TTS")
-	mysub = TextTrace('sample.srt')
+	mysub = TextTrace(filename, lang)
 	mysub.read_from_srt()
 	print("Creating audiofile")
-	mysub.create_out("sample_out_new")
+	mysub.create_out("sample_out")
+
+if __name__ == "__main__":
+	# needs Protection from running in different dir
+	if len(sys.argv) == 2 and sys.argv[1] == "--languages":
+		supported_langs()
+	elif len(sys.argv) == 3:
+		if not sys.argv[2] in tts_langs().keys():
+			print(f"{sys.argv[2]} is not supported language\n Flag --languages for more information")
+			exit()
+		ext = os.path.splitext(sys.argv[1])[-1].lower()
+		if ext == ".srt": 
+			run_srt(sys.argv[1], sys.argv[2])
+		elif ext == ".json":
+			print("Work in progress. Try .srt")
+		else:
+			usage_exit()
+	else:
+		usage_exit()
