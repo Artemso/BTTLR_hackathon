@@ -1,54 +1,25 @@
 from encoder.params_model import model_embedding_size as speaker_embedding_size
-from utils.argutils import print_args
 from synthesizer.inference import Synthesizer
 from encoder import inference as encoder
 from vocoder import inference as vocoder
 from pathlib import Path
 import numpy as np
 import librosa
-import argparse
 import torch
 import sys
 import json
 import os
 
-from pydub import AudioSegment
-from pydub.playback import play
-
 from scipy.io import wavfile
 
-
-    
-
-
 class   Generate_audio():
-    def __init__(self):
-        pass
-    def get_args(self):
-        ## Info & args
-        parser = argparse.ArgumentParser(
-            formatter_class=argparse.ArgumentDefaultsHelpFormatter
-        )
-        parser.add_argument("-e", "--enc_model_fpath", type=Path, 
-                            default="encoder/saved_models/pretrained.pt",
-                            help="Path to a saved encoder")
-        parser.add_argument('-vsrc', '--voice_sample', type=Path, help='Path to a saved voice_sample')
-        parser.add_argument('-txt', '--json_file', type=Path, help='Path to a saved text to voice over')
-        parser.add_argument("-s", "--syn_model_dir", type=Path, 
-                            default="synthesizer/saved_models/logs-pretrained/",
-                            help="Directory containing the synthesizer model")
-        parser.add_argument("-v", "--voc_model_fpath", type=Path, 
-                            default="vocoder/saved_models/pretrained/pretrained.pt",
-                            help="Path to a saved vocoder")
-        parser.add_argument("--low_mem", action="store_true", help=\
-            "If True, the memory used by the synthesizer will be freed after each use. Adds large "
-            "overhead but allows to save some GPU memory for lower-end GPUs.")
-        args = parser.parse_args()
-        return args
+    def __init__(self, voice_file, json_text):
+        self.voice_file = voice_file
+        self.json_text = json_text
     
-    def embed_voice(self, args):
-        encoder.load_model(args.enc_model_fpath)
-        in_fpath = Path(args.voice_sample)
+    def embed_voice(self):
+        encoder.load_model("encoder/saved_models/pretrained.pt")
+        in_fpath = Path(self.voice_file)
 
         ## Computing the embedding
         # First, we load the wav using the function that the speaker encoder provides. This is 
@@ -66,11 +37,11 @@ class   Generate_audio():
         embed = encoder.embed_utterance(preprocessed_wav)
         return embed
 
-    def clone_voice(self, args, embed):
-        synthesizer = Synthesizer(args.syn_model_dir.joinpath("taco_pretrained"), low_mem=args.low_mem)
-        vocoder.load_model(args.voc_model_fpath)
+    def clone_voice(self, embed):
+        synthesizer = Synthesizer("synthesizer/saved_models/logs-pretrained/taco_pretrained")
+        vocoder.load_model("vocoder/saved_models/pretrained/pretrained.pt")
         written_files = []
-        with open(args.json_file) as text_json:
+        with open(self.json_text) as text_json:
             data = json.load(text_json)
             for x in data:
                 text = x['translation']
@@ -81,15 +52,12 @@ class   Generate_audio():
                 # passing return_alignments=True
                 specs = synthesizer.synthesize_spectrograms(texts, embeds)
                 spec = specs[0]
-                print("Created the mel spectrogram")
-                
-                
+            
                 ## Generating the waveform
                 print("Synthesizing the waveform:")
                 # Synthesizing the waveform is fairly straightforward. Remember that the longer the
                 # spectrogram, the more time-efficient the vocoder.
                 generated_wav = vocoder.infer_waveform(spec)
-                
                 
                 ## Post-generation
                 # There's a bug with sounddevice that makes the audio cut one second earlier, so we
@@ -109,19 +77,10 @@ class   Generate_audio():
                 wavfile.write(fpath, synthesizer.sample_rate, generated_wav.astype(np.int16))
             print('Done!')
             return written_files
-        
-    def     combine_segments(self, json_file, file_list):
-        with open(json_file) as text_json:
-            data = json.load(text_json)
-        combined_wav = AudioSegment.empty()
-        for x in file_list:
-            temp = AudioSegment.from_wav(x)
-            combined_wav += temp
-        combined_wav.export('total.wav', format='wav')
 
+voice_file = sys.argv[1]
+json_text = sys.argv[2]
 
-new = Generate_audio()
-args = new.get_args()
-embed = new.embed_voice(args)
-written_files = new.clone_voice(args, embed)
-new.combine_segments(args.json_file, written_files)
+new = Generate_audio(voice_file, json_text)
+embed = new.embed_voice()
+written_files = new.clone_voice(embed)
