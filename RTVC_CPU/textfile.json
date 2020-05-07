@@ -1,27 +1,25 @@
 [
   {
     "index": 0,
-    "translation": "man",
+    "translation": "If you're just trying to get a quick idea of what your code is doing",
     "startTime": 0,
     "endTime": 900000000
   },
   {
     "index": 1,
-    "translation": "you",
+    "translation": "I am trying to record microphone input, perform some endpointing algorithm that will interpret it",
     "startTime": 0,
     "endTime": 900000000
-  }
-  ,
+  },
   {
     "index": 2,
-    "translation": "are",
+    "translation": "The weird thing is my code works perfectly fine if I feed in wav files",
     "startTime": 0,
     "endTime": 900000000
-  }
-  ,
+  },
   {
     "index": 3,
-    "translation": "awesome",
+    "translation": "It is going to cause a window to be opened while the sound is playing it's almost definitely not an acceptable solution",
     "startTime": 0,
     "endTime": 900000000
   }
