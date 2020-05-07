@@ -18,7 +18,8 @@ translation.json
 *.bbl
 *.bcf
 *.toc
-*.wav
+output/*.wav
 RTVC_CPU/encoder/saved_models/*
 RTVC_CPU/synthesizer/saved_models/*
 RTVC_CPU/vocoder/saved_models/*
+*.DS_Storegit

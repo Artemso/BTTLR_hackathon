@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+#Python 3.7
 from encoder.params_model import model_embedding_size as speaker_embedding_size
 from synthesizer.inference import Synthesizer
 from encoder import inference as encoder
@@ -16,13 +18,13 @@ class   Generate_audio():
     def __init__(self, voice_file, json_text):
         self.voice_file = voice_file
         self.json_text = json_text
-    
+
     def embed_voice(self):
         encoder.load_model("encoder/saved_models/pretrained.pt")
         in_fpath = Path(self.voice_file)
 
         ## Computing the embedding
-        # First, we load the wav using the function that the speaker encoder provides. This is 
+        # First, we load the wav using the function that the speaker encoder provides. This is
         # important: there is preprocessing that must be applied.
         # The following two methods are equivalent:
         # - Directly load from the filepath:
@@ -30,8 +32,8 @@ class   Generate_audio():
         # - If the wav is already loaded:
         original_wav, sampling_rate = librosa.load(in_fpath)
         preprocessed_wav = encoder.preprocess_wav(original_wav, sampling_rate)
-        
-        # Then we derive the embedding. There are many functions and parameters that the 
+
+        # Then we derive the embedding. There are many functions and parameters that the
         # speaker encoder interfaces. These are mostly for in-depth research. You will typically
         # only use this function (with its default parameters):
         embed = encoder.embed_utterance(preprocessed_wav)
@@ -51,13 +53,13 @@ class   Generate_audio():
                 # passing return_alignments=True
                 specs = synthesizer.synthesize_spectrograms(texts, embeds)
                 spec = specs[0]
-            
+
                 ## Generating the waveform
                 print("\nSynthesizing the waveform:")
                 # Synthesizing the waveform is fairly straightforward. Remember that the longer the
                 # spectrogram, the more time-efficient the vocoder.
                 generated_wav = vocoder.infer_waveform(spec)
-                
+
                 ## Post-generation
                 # There's a bug with sounddevice that makes the audio cut one second earlier, so we
                 # pad it.

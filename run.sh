@@ -17,9 +17,16 @@ if test -f "$FILE"; then
 	silence -l  1 0.3 0.3%   1 0.3 0.3% trim 0 30 : newfile : restart
 	cd speech_to_translated_text
 	FILENAMES=$(ls ../temp/*part* | tr '\n' ',')
-	./index.js $FILENAMES $SAMPLERATE $INPUT_LANGUAGE $OUTPUT_LANGUAGE
-	mv translation.json ../translation.json
-	cd ..
+	if ./index.js $FILENAMES $SAMPLERATE $INPUT_LANGUAGE $OUTPUT_LANGUAGE; then
+		mv translation.json ../translation.json
+		# If above translation is successful then run text to speech translation
+		cd .. && cd RTVC_CPY
+		if ./demo_cli.py ../$FILE ../translation.json; then
+			# Uncomment below if you need list of output files
+			# LASTWAVFILENUM=$(ls -A1 ../output | sed -e 's/\.wav$//' | tail -n1)
+			# OUTPUTFILES=../output/{00..$LASTWAVFILENUM}.wav
+		fi
+	fi
 	rm temp/$NAME*.flac
 else
 	echo "Invalid file input given"
