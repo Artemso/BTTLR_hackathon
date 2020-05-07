@@ -4,7 +4,7 @@ from gtts import gTTS
 from pydub import AudioSegment
 from pydub.playback import play
 from pydub.effects import speedup
-from io import BytesIO
+from tempfile import TemporaryFile
 import datetime
 import subprocess
 import os
@@ -48,6 +48,7 @@ class SubTitles():
 		self.data = None
 		self.l = 0
 		self.segments = None
+		self.segments_audio = None
 		self.segments_order = None
 	
 	def __len__(self):
@@ -78,23 +79,24 @@ class SubTitles():
 		while i < self.l:
 			ret, i = read_segment(i)
 			self.segments[ret.sid] = ret
+		self.segments_audio = dict()
 
 	def create_segment(self, sid):
 		if sid in self.segments.keys():
+			tmp = TemporaryFile()
 			tts = gTTS(self.segments[sid].text)
-			tts.save(f'{sid}.mp3')
-			# sound_raw = BytesIO()
-			# tts.write_to_fp(sound_raw)
-			# sound = AudioSegment.from_raw(sound_raw)
-			# play(sound)
+			tts.write_to_fp(tmp)
+			tmp.seek(0)
+			sound = AudioSegment.from_mp3(tmp)
+			tmp.close()
+			self.segments_audio[sid] = sound
 
 	def match_slot(self, seg):
 		if not seg+1 in self.segments.keys():
-			os.rename(f'{seg}.mp3', f'fin_{seg}.mp3')
 			return
 		gap = self.segments[seg+1].start - self.segments[seg].start
-		l = get_audio_len(f"{seg}.mp3")
-		seg_audio = AudioSegment.from_file(f"{seg}.mp3", format="mp3")
+		seg_audio = self.segments_audio[seg]
+		l = datetime.timedelta(seconds=seg_audio.duration_seconds)
 		if l > gap:
 			rate = l / gap
 			alt = speedup(seg_audio, playback_speed=rate)
@@ -105,32 +107,8 @@ class SubTitles():
 			alt = AudioSegment.empty()
 			alt += seg_audio + silence_audio
 		else:
-			os.rename(f'{seg}.mp3', f'fin_{seg}.mp3')
 			return
-		alt.export(f"fin_{seg}.mp3", format="mp3")
-
-	# def combine_segments(self, first, second):
-	# 	gap = self.segments[second].start - self.segments[first].start
-	# 	first_lenght = get_audio_len(f"{first}.mp3")
-	# 	sound1 = AudioSegment.from_file(f"{first}.mp3", format="mp3")
-	# 	sound2 = AudioSegment.from_file(f"{second}.mp3", format="mp3")
-	# 	print(f"Segment {first} Length {first_lenght}")
-	# 	print(f"Gap {first}-{second} {gap}")
-	# 	if first_lenght > gap:
-	# 		rate = first_lenght / gap
-	# 		print(f"Adjusting segment {first} to speed rate {rate}")
-	# 		alt_sound1 = speedup(sound1, playback_speed=rate)
-	# 		result = AudioSegment.empty()
-	# 		result += alt_sound1 + sound2
-	# 		result.export(f"{first}-{second}.mp3", format="mp3")
-	# 	else:
-	# 		silence = gap - first_lenght
-	# 		silence_duration = silence.total_seconds() * 1000
-	# 		print(f"Creating silent segment of {silence_duration} milliseconds")
-	# 		silence_audio = AudioSegment.silent(duration=silence_duration)
-	# 		result = AudioSegment.empty()
-	# 		result += sound1 + silence_audio + sound2
-	# 		result.export(f"{first}-{second}.mp3", format="mp3")
+		self.segments_audio[seg] = alt
 
 	def create_out(self, name):
 		for sid in self.segments.keys():
@@ -139,17 +117,14 @@ class SubTitles():
 			self.match_slot(sid)
 		result = AudioSegment.empty()
 		for sid in self.segments.keys():
-			segment = AudioSegment.from_file(f"fin_{sid}.mp3", format="mp3")
-			result += segment
+			result += self.segments_audio[sid]
 		result.export(f"{name}.mp3", format="mp3")
-		l = get_audio_len(f"{name}.mp3")
+		l = datetime.timedelta(result.duration_seconds)
 		print(f"Created {name}.mp3")
 		print(f"Final leght {l}")
 
 if __name__ == "__main__":
 	mysub = SubTitles('sample.srt')
 	mysub.setup()
-	# print(mysub.segments[270])
-	# mysub.play_segment(270)
 	print("Creating audiofile")
 	mysub.create_out("sample_out")
