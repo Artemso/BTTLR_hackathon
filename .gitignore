@@ -24,3 +24,4 @@ RTVC_CPU/synthesizer/saved_models/*
 RTVC_CPU/vocoder/saved_models/*
 *.DS_Storegit
 out_audio.flac
+new*.mp4
