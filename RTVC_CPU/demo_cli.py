@@ -11,6 +11,11 @@ import torch
 import sys
 import json
 
+from pydub import AudioSegment
+from pydub.playback import play
+
+from scipy.io import wavfile
+
 
 if __name__ == '__main__':
     ## Info & args
@@ -56,7 +61,6 @@ if __name__ == '__main__':
     # speaker encoder interfaces. These are mostly for in-depth research. You will typically
     # only use this function (with its default parameters):
     embed = encoder.embed_utterance(preprocessed_wav)
-
     with open(args.text_json) as text_json:
         data = json.load(text_json)
         for key in data:
@@ -85,9 +89,7 @@ if __name__ == '__main__':
                 
             # Save it on the disk
             fpath = "%02d.wav" % num_generated
-            print(generated_wav.dtype)
-            librosa.output.write_wav(fpath, generated_wav.astype(np.float32), 
-                                        synthesizer.sample_rate)
+            generated_wav *= 32767 / max(0.01, np.max(np.abs(generated_wav)))
+            wavfile.write(fpath, synthesizer.sample_rate, generated_wav.astype(np.int16))
             num_generated += 1
-            print("\nSaved output as %s\n\n" % fpath)
         print('Done!')
