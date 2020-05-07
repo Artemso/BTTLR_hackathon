@@ -31,6 +31,6 @@ pip3 install torch torchvision
 # Check samplerate of original file
 ffmpeg -i FILENAME
 ./run.sh FILENAME SAMPLERATE LANGUAGE_IN LANGUAGE_OUT
-# eg. ./run.sh speech.mp4 44100 en fi
+# eg. ./run.sh samples/speech.mp4 44100 en fi
 ```
 
