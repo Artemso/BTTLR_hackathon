@@ -9,25 +9,20 @@ async function translation_chunk(response, translator, startTime) {
 		const translation = await translator.translate(
 			result.alternatives[0].transcript
 		);
-		const resultStartTime =
-			start +
-			result.alternatives[0].words.reduce(
-				(acc, curr) =>
-					curr.startTime.nanos < acc ? curr.startTime.nanos : acc,
-				0
-			);
-		const resultEndTime =
-			start +
-			result.alternatives[0].words.reduce(
-				(acc, curr) => (curr.endTime?.nanos > acc ? curr.endTime?.nanos : acc),
-				0
-			);
-		translations.push({
-			translation: translation,
-			startTime: resultStartTime,
-			endTime: resultEndTime,
-		});
-		start = resultEndTime;
+		if (!_.isEmpty(_.last(result.alternatives[0].words))) {
+			const resultStartTime = start;
+			const lastWord = _.last(result.alternatives[0].words);
+			const resultEndTime =
+				resultStartTime +
+				(lastWord.endTime?.seconds * 1000000000 + lastWord.endTime?.nanos);
+			const translationResult = {
+				translation: translation,
+				startTime: resultStartTime,
+				endTime: resultEndTime,
+			};
+			translations.push(translationResult);
+			start = resultEndTime;
+		}
 	}
 	return translations;
 }
@@ -40,7 +35,7 @@ async function translation_all({
 	translator,
 }) {
 	let translations = [];
-	let startTime = 0;
+	let startTime = 0.0;
 	for (let audio of audioData) {
 		const request = {
 			config: {
@@ -67,7 +62,12 @@ async function translation_all({
 			translations.push(translation);
 		}
 	}
-	return _.flatten(translations).map((t, index) => ({ ...t, index }));
+	return _.flatten(translations).map((t, index) => ({
+		...t,
+		index,
+		startTime: parseFloat(t.startTime / 1000000000.0).toFixed(3),
+		endTime: parseFloat(t.endTime / 1000000000.0).toFixed(3),
+	}));
 }
 
 async function transcribeAndTranslate(inputData) {
