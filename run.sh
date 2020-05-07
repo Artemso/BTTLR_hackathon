@@ -20,14 +20,20 @@ if test -f "$FILE"; then
 	if ./index.js $FILENAMES $SAMPLERATE $INPUT_LANGUAGE $OUTPUT_LANGUAGE; then
 		mv translation.json ../translation.json
 		# If above translation is successful then run text to speech translation
-		cd .. && cd RTVC_CPY
+		cd ../
+		rm temp/$NAME*.flac
+		cd RTVC_CPU
 		if ./demo_cli.py ../$FILE ../translation.json; then
 			# Uncomment below if you need list of output files
 			# LASTWAVFILENUM=$(ls -A1 ../output | sed -e 's/\.wav$//' | tail -n1)
 			# OUTPUTFILES=../output/{00..$LASTWAVFILENUM}.wav
+			echo "done with output files..."
+			# Remove output files
+			# rm ../output/*
+			# Only leave final output
 		fi
+		cd ..
 	fi
-	rm temp/$NAME*.flac
 else
 	echo "Invalid file input given"
 fi

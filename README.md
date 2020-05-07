@@ -1,4 +1,4 @@
-# Speech To Text
+# Babel: Speech To translated Speech for Videos
 
 
 ## Before first use
@@ -14,50 +14,23 @@ cp credentials_example.json credentials.json
 #### MacOS install sox & node
 ```
 brew install sox
+brew install ffmpeg
 # if you don't have node installed, do these
 # brew install nvm
 # nvm install node
 # nvm use node
-npm install
-```
-
-#### Linux install sox & node
-```
-# Install sox https://at.projects.genivi.org/wiki/display/PROJ/Installation+of+SoX+on+different+Platforms
-# Install NVM https://github.com/nvm-sh/nvm#install--update-script
-nvm install node
-nvm use node
-npm install
+cd speech_to_translated_text && npm install && cd ..
+cd RTVC_CPY && pip3 install -r requirements.txt
+pip3 install torch torchvision
+# download models from https://drive.google.com/file/d/1n1sPXvT34yXFLT47QZA6FIRGrwMeSsZc/view
+# move those `saved_models` in their corresponding folders to RTVC_CPU
 ```
 
 ## Usage
 ```
-# Check samplerate
+# Check samplerate of original file
 ffmpeg -i FILENAME
 ./run.sh FILENAME SAMPLERATE LANGUAGE_IN LANGUAGE_OUT
-# eg. ./run.sh longer.mp3 44100 en fi
+# eg. ./run.sh speech.mp4 44100 en fi
 ```
 
-# Artem is sorry for adding RTVC_CPU (MacOS installation guide written by a monkey):
-
-## Apparently, should only work with Python3.7
-
-The GUI was cut out by a barbarian :D
-
-install required modules (may require some tinkering):
-```pip3 install -r requirements.txt```
-
-install pytorch:
-```pip3 install torch torchvision```
-
-From google drive you would want to install a pretrained model (trained in english!). Just put the files into the respective folders:
-```https://drive.google.com/file/d/1n1sPXvT34yXFLT47QZA6FIRGrwMeSsZc/view```
-
-From now on, you should be good.
-
-## Usage
-
-you would want to run the program like that (some examples should be provided):
-```python3 demo_cli.py -vsrc <Voice source> -txt <TEXTFILE in JSON format>```
-
-The program should spit generated speech in wav format.
