@@ -7,9 +7,9 @@ from pydub.playback import play
 from pydub.effects import speedup
 from tempfile import TemporaryFile
 import datetime
-import subprocess
 import os
 import sys
+import json
 
 # Constants Definition
 SRT_TIME_FORMAT = '%H:%M:%S,%f'
@@ -90,7 +90,7 @@ class TextTrace():
 		self.data = None
 		self.l = 0
 		self.segments = None
-	
+
 	def __len__(self):
 		if not self.segments:
 			return 0
@@ -124,18 +124,51 @@ class TextTrace():
 			self.segments[ret.sid] = ret
 
 	def read_from_json(self):
-		pass
+		def read_segment(seg):
+			sid = seg['index']
+			startTime = seg['startTime'] / 1000000000
+			endTime = seg['endTime'] / 1000000000
+			text = seg['translation']
+			segment = TTS_Segment(sid, startTime, endTime, text, self.lang)
+			# print(segment)
+			return segment
+
+		with open(self.filename) as f:
+			self.data = json.load(f)
+		tot_len = len(self.data)
+		rate = tot_len // 20
+		if rate == 0:
+			rate = 1
+		cnt = 0
+		self.segments = dict()
+		for item in self.data:
+			cnt += 1
+			if cnt == rate:
+				print('*', end="")
+				cnt = 0
+			new = read_segment(item)
+			self.segments[new.sid] = new
+		print()
 
 	def create_out(self, name):
+		tot_len = len(self.segments)
+		rate = tot_len // 20
+		if rate == 0:
+			rate = 1
+		cnt = 0
 		result = AudioSegment.empty()
 		for sid in self.segments.keys():
-			print(self.segments[sid])
+			cnt += 1
+			if cnt == rate:
+				print('*', end="")
+				cnt = 0
 			if sid+1 in self.segments.keys():
 				self.segments[sid].adjust_audio_length(self.segments[sid+1].start)
 			result += self.segments[sid].audio
 		result.export(f"{name}.mp3", format="mp3")
 		l = datetime.timedelta(seconds=result.duration_seconds)
-		print(f"\nCreated {name}.mp3")
+		print()
+		print(f"Created {name}.mp3")
 		print(f"Final leght {l}")
 
 def usage_exit():
@@ -148,12 +181,21 @@ def supported_langs():
 		print(f"{key} : {val}")
 	exit()
 
-def run_srt(filename, lang):
-	print("TTS")
+def run(filename, lang, ext):
+	basename = os.path.basename(filename)
+	out = basename.split('.')[0]
+	print(f"TTS from {basename}")
 	mysub = TextTrace(filename, lang)
-	mysub.read_from_srt()
-	print("Creating audiofile")
-	mysub.create_out("sample_out")
+	print(f"Creating audio segments")
+	if ext == ".srt":
+		mysub.read_from_srt()
+	elif ext == ".json":
+		mysub.read_from_json()
+	else:
+		sys.exit(f'Unsupported file {basename}')
+	print("Creating final audiofile")
+	mysub.create_out(f"{out}_audio")
+	print("Finished")
 
 if __name__ == "__main__":
 	# needs Protection from running in different dir
@@ -164,10 +206,8 @@ if __name__ == "__main__":
 			print(f"{sys.argv[2]} is not supported language\n Flag --languages for more information")
 			exit()
 		ext = os.path.splitext(sys.argv[1])[-1].lower()
-		if ext == ".srt": 
-			run_srt(sys.argv[1], sys.argv[2])
-		elif ext == ".json":
-			print("Work in progress. Try .srt")
+		if ext == ".srt" or ext == ".json": 
+			run(sys.argv[1], sys.argv[2], ext)
 		else:
 			usage_exit()
 	else:
