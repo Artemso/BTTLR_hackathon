@@ -11,13 +11,16 @@ if test -f "$FILE"; then
 	NAME="${FILENAME%.*}"
 	CONVERT="${NAME}_converted.flac"
 	ffmpeg -i $FILE -ac 1 $CONVERT
-	mv $CONVERT audio/$NAME.flac
+	mv $CONVERT temp/$NAME.flac
 	# Split into small chunks
-	sox -V3 audio/$NAME.flac audio/${NAME}_part_.flac \
+	sox -V3 temp/$NAME.flac temp/${NAME}_part_.flac \
 	silence -l  1 0.3 0.3%   1 0.3 0.3% trim 0 30 : newfile : restart
-	FILENAMES=$(ls audio/*part* | tr '\n' ',')
+	cd speech_to_translated_text
+	FILENAMES=$(ls ../temp/*part* | tr '\n' ',')
 	./index.js $FILENAMES $SAMPLERATE $INPUT_LANGUAGE $OUTPUT_LANGUAGE
-	rm audio/$NAME*.flac
+	mv translation.json ../translation.json
+	cd ..
+	rm temp/$NAME*.flac
 else
 	echo "Invalid file input given"
 fi

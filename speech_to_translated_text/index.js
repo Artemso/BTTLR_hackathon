@@ -7,7 +7,7 @@ const transcribeAndTranslate = require('./transcribeAndTranslate.js');
 const Translator = require('./translator.js');
 const { Translate } = require('@google-cloud/translate').v2;
 
-const credentials = JSON.parse(fs.readFileSync('credentials.json'));
+const credentials = JSON.parse(fs.readFileSync('../credentials.json'));
 const arguments = process.argv.slice(2);
 
 const translateClient = new Translate({
