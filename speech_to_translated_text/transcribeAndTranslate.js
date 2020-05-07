@@ -3,17 +3,20 @@ const fs = require('fs');
 const _ = require('lodash');
 
 async function translation_chunk(response, translator, startTime) {
-	let start = startTime;
 	let translations = [];
 	for (let result of response.results) {
 		const translation = await translator.translate(
 			result.alternatives[0].transcript
 		);
+		console.log(result.alternatives[0].words);
 		if (!_.isEmpty(_.last(result.alternatives[0].words))) {
-			const resultStartTime = start;
+			const firstWord = _.first(result.alternatives[0].words);
 			const lastWord = _.last(result.alternatives[0].words);
+			const resultStartTime =
+				startTime +
+				(firstWord.startTime?.seconds * 1000000000 + lastWord.startTime?.nanos);
 			const resultEndTime =
-				resultStartTime +
+				startTime +
 				(lastWord.endTime?.seconds * 1000000000 + lastWord.endTime?.nanos);
 			const translationResult = {
 				translation: translation,
@@ -21,7 +24,6 @@ async function translation_chunk(response, translator, startTime) {
 				endTime: resultEndTime,
 			};
 			translations.push(translationResult);
-			start = resultEndTime;
 		}
 	}
 	return translations;
