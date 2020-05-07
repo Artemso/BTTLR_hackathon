@@ -23,9 +23,8 @@ if test -f "$FILE"; then
 		mv translation.json ../translation.json
 		# If above translation is successful then run text to speech translation
 		cd ../
-		rm temp/$NAME*.flac
 		cd RTVC_CPU
-		if ./demo_cli.py ../$FILE ../translation.json; then
+		if ./demo_cli.py ../temp/$NAME.flac ../translation.json; then
 			cd ../srt_to_speech
 			if ./combine_speech.py ../translation.json ../output $OUT_AUDIO; then
 				mv $OUT_AUDIO ../
@@ -36,6 +35,7 @@ if test -f "$FILE"; then
 			fi
 		fi
 		cd ..
+		rm temp/$NAME*.flac
 	fi
 else
 	echo "Invalid file input given"
