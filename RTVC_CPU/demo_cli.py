@@ -72,7 +72,7 @@ class   Generate_audio():
                         os.makedirs(output_dir)
                 except:
                     pass
-                fpath = "%s/%02d.wav" % (output_dir, x['index'])
+                fpath = "%s/%d.wav" % (output_dir, x['index'])
                 generated_wav *= 32767 / max(0.01, np.max(np.abs(generated_wav)))
                 wavfile.write(fpath, synthesizer.sample_rate, generated_wav.astype(np.int16))
 
