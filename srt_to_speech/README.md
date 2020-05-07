@@ -20,3 +20,11 @@ supported Languages
 ```
 ./texttrace_to_speech.py --languages
 ```
+
+### Add to run.sh
+```
+cd srt_to_speech
+./combine_speech.py $JSON_FILE ../output/ $OUTPUT_FILE
+cp $OUPUT_FILE someplacesafe
+cd ..
+```
