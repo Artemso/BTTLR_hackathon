@@ -37,7 +37,6 @@ if test -f "$FILE"; then
 			# Remove output files
 			rm ../output/*
 			# Only leave final output
-			fi
 		fi
 		cd ..
 	fi
