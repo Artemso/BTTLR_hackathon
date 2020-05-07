@@ -14,7 +14,7 @@ class Synthesizer:
     sample_rate = hparams.sample_rate
     hparams = hparams
     
-    def __init__(self, checkpoints_dir: Path, verbose=True, low_mem=False):
+    def __init__(self, checkpoints_dir: Path, verbose=True):
         """
         Creates a synthesizer ready for inference. The actual model isn't loaded in memory until
         needed or until load() is called.
@@ -27,7 +27,7 @@ class Synthesizer:
         memory is low (<= 2gb)
         """
         self.verbose = verbose
-        self._low_mem = low_mem
+        self._low_mem = False
         
         # Prepare the model
         self._model = None  # type: Tacotron2
@@ -36,9 +36,9 @@ class Synthesizer:
             raise Exception("Could not find any synthesizer weights under %s" % checkpoints_dir)
         self.checkpoint_fpath = checkpoint_state.model_checkpoint_path
         if verbose:
-            model_name = checkpoints_dir.parent.name.replace("logs-", "")
+            # model_name = checkpoints_dir.parent.name.replace("logs-", "")
             step = int(self.checkpoint_fpath[self.checkpoint_fpath.rfind('-') + 1:])
-            print("Found synthesizer \"%s\" trained to step %d" % (model_name, step))
+            # print("Found synthesizer \"%s\" trained to step %d" % (model_name, step))
      
     def is_loaded(self):
         """
