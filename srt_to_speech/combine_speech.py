@@ -76,6 +76,12 @@ class TTS_Segment():
 			return
 		self.audio = alt
 
+	def add_silent_infront(self, silent_ms):
+		silent_audio = AudioSegment.silent(duration=silent_ms)
+		alt = AudioSegment.empty()
+		alt += silent_audio + self.audio
+		self.audio = alt
+
 class TextTrace():
 	def __init__(self, filename, lang='en'):
 		self.filename = filename
@@ -134,6 +140,9 @@ class TextTrace():
 				print('*', end="")
 				cnt = 0
 			if sid+1 in self.segments.keys():
+				if sid == 0 and self.segments[sid].start != 0.0:
+					self.segments[sid].add_silent_infront(self.segments[sid].start * 1000)
+					self.segments[sid].start = 0.0
 				self.segments[sid].adjust_audio_length(self.segments[sid+1].start)
 			result += self.segments[sid].audio
 		result.export(f"{name}", format=audio_type)
