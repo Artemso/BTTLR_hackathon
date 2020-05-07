@@ -1,19 +1,27 @@
 [
   {
     "index": 0,
-    "translation": "this is text one",
+    "translation": "man",
     "startTime": 0,
     "endTime": 900000000
   },
   {
     "index": 1,
-    "translation": "this is text two",
+    "translation": "you",
     "startTime": 0,
     "endTime": 900000000
-  },
+  }
+  ,
   {
     "index": 2,
-    "translation": "this is text three",
+    "translation": "are",
+    "startTime": 0,
+    "endTime": 900000000
+  }
+  ,
+  {
+    "index": 3,
+    "translation": "awesome",
     "startTime": 0,
     "endTime": 900000000
   }
