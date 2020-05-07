@@ -40,4 +40,4 @@ if test -f "$FILE"; then
 else
 	echo "Invalid file input given"
 fi
-rm temp
+rm -rf temp
