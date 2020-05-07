@@ -10,6 +10,7 @@ import argparse
 import torch
 import sys
 import json
+import os
 
 from pydub import AudioSegment
 from pydub.playback import play
@@ -31,6 +32,8 @@ class   Generate_audio():
         parser.add_argument("-e", "--enc_model_fpath", type=Path, 
                             default="encoder/saved_models/pretrained.pt",
                             help="Path to a saved encoder")
+        parser.add_argument('-vsrc', '--voice_sample', type=Path, help='Path to a saved voice_sample')
+        parser.add_argument('-txt', '--json_file', type=Path, help='Path to a saved text to voice over')
         parser.add_argument("-s", "--syn_model_dir", type=Path, 
                             default="synthesizer/saved_models/logs-pretrained/",
                             help="Directory containing the synthesizer model")
@@ -43,13 +46,11 @@ class   Generate_audio():
         args = parser.parse_args()
         return args
     
-    def clone_voice(self, args, voice_sample, json_file):
+    def clone_voice(self, args):
         encoder.load_model(args.enc_model_fpath)
         synthesizer = Synthesizer(args.syn_model_dir.joinpath("taco_pretrained"), low_mem=args.low_mem)
         vocoder.load_model(args.voc_model_fpath)
-
-        num_generated = 0
-        in_fpath = Path(voice_sample)
+        in_fpath = Path(args.voice_sample)
 
         ## Computing the embedding
         # First, we load the wav using the function that the speaker encoder provides. This is 
@@ -66,10 +67,10 @@ class   Generate_audio():
         # only use this function (with its default parameters):
         embed = encoder.embed_utterance(preprocessed_wav)
         written_files = []
-        with open(json_file) as text_json:
+        with open(args.json_file) as text_json:
             data = json.load(text_json)
-            for key in data:
-                text = key['translation']
+            for x in data:
+                text = x['translation']
                 # The synthesizer works in batch, so you need to put your data in a list or numpy array
                 texts = [text]
                 embeds = [embed]
@@ -91,21 +92,32 @@ class   Generate_audio():
                 # There's a bug with sounddevice that makes the audio cut one second earlier, so we
                 # pad it.
                 generated_wav = np.pad(generated_wav, (0, synthesizer.sample_rate), mode="constant")
-                    
+
                 # Save it on the disk
-                fpath = "%02d.wav" % num_generated
+                output_dir = 'output'
+                try:
+                    if not os.path.exists('output_dir'):
+                        os.makedirs(output_dir)
+                except:
+                    pass
+                fpath = "output/%02d.wav" % x['index']
                 written_files.append(fpath)
                 generated_wav *= 32767 / max(0.01, np.max(np.abs(generated_wav)))
                 wavfile.write(fpath, synthesizer.sample_rate, generated_wav.astype(np.int16))
-                num_generated += 1
             print('Done!')
             return written_files
         
-    def     combine_segments(self, file_list):
-        print(file_list)
+    def     combine_segments(self, json_file, file_list):
+        with open(json_file) as text_json:
+            data = json.load(text_json)
+        combined_wav = AudioSegment.empty()
+        for x in file_list:
+            temp = AudioSegment.from_wav(x)
+            combined_wav += temp
+        combined_wav.export('total.wav', format='wav')
 
 
 new = Generate_audio()
 args = new.get_args()
-written_files = new.clone_voice(args, 'rus2.m4a', 'textfile.json')
-new.combine_segments(written_files)
+written_files = new.clone_voice(args)
+new.combine_segments(args.json_file, written_files)
