@@ -46,10 +46,8 @@ class   Generate_audio():
         args = parser.parse_args()
         return args
     
-    def clone_voice(self, args):
+    def embed_voice(self, args):
         encoder.load_model(args.enc_model_fpath)
-        synthesizer = Synthesizer(args.syn_model_dir.joinpath("taco_pretrained"), low_mem=args.low_mem)
-        vocoder.load_model(args.voc_model_fpath)
         in_fpath = Path(args.voice_sample)
 
         ## Computing the embedding
@@ -66,6 +64,11 @@ class   Generate_audio():
         # speaker encoder interfaces. These are mostly for in-depth research. You will typically
         # only use this function (with its default parameters):
         embed = encoder.embed_utterance(preprocessed_wav)
+        return embed
+
+    def clone_voice(self, args, embed):
+        synthesizer = Synthesizer(args.syn_model_dir.joinpath("taco_pretrained"), low_mem=args.low_mem)
+        vocoder.load_model(args.voc_model_fpath)
         written_files = []
         with open(args.json_file) as text_json:
             data = json.load(text_json)
@@ -119,5 +122,6 @@ class   Generate_audio():
 
 new = Generate_audio()
 args = new.get_args()
-written_files = new.clone_voice(args)
+embed = new.embed_voice(args)
+written_files = new.clone_voice(args, embed)
 new.combine_segments(args.json_file, written_files)
