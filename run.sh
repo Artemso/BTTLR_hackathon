@@ -6,6 +6,7 @@ FILE=$1
 SAMPLERATE=$2
 INPUT_LANGUAGE=$3
 OUTPUT_LANGUAGE=$4
+mkdir temp
 if test -f "$FILE"; then
 	FILENAME=$(basename -- "$FILE")
 	EXTENSION="${filename##*.}"
@@ -39,3 +40,4 @@ if test -f "$FILE"; then
 else
 	echo "Invalid file input given"
 fi
+rm temp
