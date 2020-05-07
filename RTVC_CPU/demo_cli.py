@@ -40,7 +40,6 @@ class   Generate_audio():
     def clone_voice(self, embed):
         synthesizer = Synthesizer("synthesizer/saved_models/logs-pretrained/taco_pretrained")
         vocoder.load_model("vocoder/saved_models/pretrained/pretrained.pt")
-        written_files = []
         with open(self.json_text) as text_json:
             data = json.load(text_json)
             for x in data:
@@ -54,7 +53,7 @@ class   Generate_audio():
                 spec = specs[0]
             
                 ## Generating the waveform
-                print("Synthesizing the waveform:")
+                print("\nSynthesizing the waveform:")
                 # Synthesizing the waveform is fairly straightforward. Remember that the longer the
                 # spectrogram, the more time-efficient the vocoder.
                 generated_wav = vocoder.infer_waveform(spec)
@@ -65,22 +64,20 @@ class   Generate_audio():
                 generated_wav = np.pad(generated_wav, (0, synthesizer.sample_rate), mode="constant")
 
                 # Save it on the disk
-                output_dir = 'output'
+                output_dir = '../output'
                 try:
-                    if not os.path.exists('output_dir'):
+                    if not os.path.exists(output_dir):
                         os.makedirs(output_dir)
                 except:
                     pass
-                fpath = "output/%02d.wav" % x['index']
-                written_files.append(fpath)
+                fpath = "%s/%02d.wav" % (output_dir, x['index'])
                 generated_wav *= 32767 / max(0.01, np.max(np.abs(generated_wav)))
                 wavfile.write(fpath, synthesizer.sample_rate, generated_wav.astype(np.int16))
-            print('Done!')
-            return written_files
+
 
 voice_file = sys.argv[1]
 json_text = sys.argv[2]
 
 new = Generate_audio(voice_file, json_text)
 embed = new.embed_voice()
-written_files = new.clone_voice(embed)
+new.clone_voice(embed)
