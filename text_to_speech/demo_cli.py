@@ -66,7 +66,7 @@ class   Generate_audio():
                 generated_wav = np.pad(generated_wav, (0, synthesizer.sample_rate), mode="constant")
 
                 # Save it on the disk
-                output_dir = '../output'
+                output_dir = '../temp'
                 try:
                     if not os.path.exists(output_dir):
                         os.makedirs(output_dir)
