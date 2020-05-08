@@ -81,7 +81,7 @@ pip3 install pydub
 
 Download voice models for text to speech from our [shared models](https://drive.google.com/file/d/1n1sPXvT34yXFLT47QZA6FIRGrwMeSsZc/view).
 
-Move those models to their corresponding folders in `text_to_speec`
+Move those models to their corresponding folders in `text_to_speech`
 
 ## Usage
 
