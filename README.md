@@ -1,4 +1,4 @@
-# [Babel](jiricodes.com/babel): Speech To translated Speech
+# [Babel](http://jiricodes.com/babel): Speech To translated Speech
 
 ![Tower of Babel](/samples/babel.jpeg)
 
