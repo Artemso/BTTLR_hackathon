@@ -26,10 +26,10 @@ if test -f "$FILE"; then
 		cd text_to_speech
 		if ./demo_cli.py ../temp/$NAME.flac ../translation.json; then
 			cd ../sow_speech
-			if ./combine_speech.py ../translation.json ../output $OUT_AUDIO; then
+			if ./combine_speech.py ../translation.json ../temp $OUT_AUDIO; then
 				mv $OUT_AUDIO ../
 				if ffmpeg -i ../$FILE -i ../$OUT_AUDIO -c:v copy -map 0:v:0 -map 1:a:0 ../new_${NAME}.mp4; then
-					rm ../output/*
+					rm ../temp/*
 					echo "created new video new_${NAME}.mp4"
 				fi
 			fi
