@@ -12,6 +12,7 @@ Babel was created in about 48 hours during [Back to the living room Hackathon](h
 Here's is an example of the result we achieved:
 [Original Marketing video in German](https://youtu.be/037nONh0l5M) -> [Babel translation to English (40s)](https://youtu.be/nWnjKjztRTs)
 
+** For more information visit: [Babel's Website](https://jiricodes.com/babel)
 ## speech_to_translated_text
 A nodeJS app using Google's speech-to-text API translating audio files to translated text json like:
 ```json
@@ -35,7 +36,7 @@ A nodeJS app using Google's speech-to-text API translating audio files to transl
 An AI driven software using tensorflow to synthesize voice based on input voice reading above json text.
 
 ## sow_speech
-A final script putting the read sentence files together and padding it with silence
+A final script merging the read sentence files together using silent padding and tempo adjustments in order to comply with original timestamps.
 
 ## Tie it all together with run.sh
 1. Extract voice data from the video using `ffmpeg`
