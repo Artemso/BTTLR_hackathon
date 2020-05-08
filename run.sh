@@ -36,6 +36,9 @@ if test -f "$FILE"; then
 		fi
 		cd ..
 		rm temp/$NAME*.flac
+		if test -f "$OUT_AUDIO"; then
+			rm $OUT_AUDIO
+		fi
 	fi
 else
 	echo "Invalid file input given"

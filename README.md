@@ -1,6 +1,6 @@
 # [Babel](http://jiricodes.com/babel): Speech To translated Speech
 
-![Tower of Babel](/samples/babel.jpeg)
+![Tower of Babel](/img/babel.jpeg)
 
 > *The tower of babel is an origin myth explaining why the world's people speak different languages*
 
