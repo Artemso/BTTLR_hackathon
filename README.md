@@ -33,8 +33,7 @@ A nodeJS app using Google's speech-to-text API translating audio files to transl
 ```
 
 ## text_to_speech
-An AI driven software using tensorflow to synthesize voice based on input voice reading above json text. Forked from the [CorentinJ's Real Time Voice Cloning](https://github.com/CorentinJ/Real-Time-Voice-Cloning). This implementation uses pretrained models to generate an embedding from the source sample, synthesize it with the text from the json and, lastly, vocode it into a waveform.
-
+An AI driven software using tensorflow to synthesize voice based on input voice reading above json text. Forked from the [CorentinJ's Real Time Voice Cloning](https://github.com/CorentinJ/Real-Time-Voice-Cloning). This implementation uses encoder to generate an embedding using utterance from the video, synthesize the embedding and the text into a spectogram and a vocoder that generates a waveform. Encoder, synthesizer and a vocoder use pretrained models.
 ## sow_speech
 A final script merging the read sentence files together using silent padding and tempo adjustments in order to comply with original timestamps.
 
