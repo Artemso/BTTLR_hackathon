@@ -1,4 +1,4 @@
-# [Babel](https://gontjarow.github.io/Babel/): Speech To translated Speech
+# [Babel](jiricodes.com/babel): Speech To translated Speech
 
 ![Tower of Babel](/samples/babel.jpeg)
 
