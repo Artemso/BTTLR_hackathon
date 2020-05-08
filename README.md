@@ -5,6 +5,12 @@
 
 Babel uses AI-learning to mimic a foreign speaker’s voice and speech patterns before translating the speaker to your native language.
 
+## About this Project
+Babel was created in about 48 hours during [Back to the living room Hackathon](https://backtothelivingroom.tech/). The goal was to create an automated solution for video translation while maitaining the original speaker's voice.
+
+Here's is an example of the result we achieved:
+[Original Marketing video in German](https://youtu.be/037nONh0l5M) -> [Babel translation to English (40s)](https://youtu.be/nWnjKjztRTs)
+
 ## speech_to_translated_text
 A nodeJS app using Google's speech-to-text API translating audio files to translated text json like:
 ```json
@@ -30,7 +36,7 @@ An AI driven software using tensorflow to synthesize voice based on input voice 
 ## sow_speech
 A final script putting the read sentence files together and padding it with silence
 
-## run.sh
+## Tie it all together with run.sh
 1. Extract voice data from the video using `ffmpeg`
 2. Split the voice data based on silence & size with `sox`
 3. Run `speech_to_translated_text` for the audio files to generate `translation.json`
@@ -66,6 +72,6 @@ pip3 install pydub
 # Check samplerate of original file
 ffmpeg -i FILENAME
 ./run.sh FILENAME SAMPLERATE LANGUAGE_IN LANGUAGE_OUT
-# eg. ./run.sh samples/speech.mp4 44100 en fi
+# eg. ./run.sh samples/speech.mp4 44100 fr en
 ```
 
