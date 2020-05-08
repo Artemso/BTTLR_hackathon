@@ -12,7 +12,7 @@ Babel was created in about 48 hours during [Back to the living room Hackathon](h
 Here's is an example of the result we achieved:
 [Original Marketing video in German](https://youtu.be/037nONh0l5M) -> [Babel translation to English (40s)](https://youtu.be/nWnjKjztRTs)
 
-** For more information visit: [Babel's Website](https://jiricodes.com/babel)
+**For more information visit: [Babel's Website](https://jiricodes.com/babel)**
 ## speech_to_translated_text
 A nodeJS app using Google's speech-to-text API translating audio files to translated text json like:
 ```json
