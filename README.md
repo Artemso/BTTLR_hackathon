@@ -47,11 +47,23 @@ A final script putting the read sentence files together and padding it with sile
 
 
 ## Prerequisites before running
+Clone repo
 ```
 git clone git@github.com:Artemso/BTTLR_hackathon.git bttlr_hackathon
 cd bttlr_hackathon
+```
+
+Fill credentials by creating your own google cloud service account and [downloading credentials](https://console.cloud.google.com/apis/credentials)
+
+Then:
+
+```
 cp credentials_example.json credentials.json
-# Fill credentials by first creating your own google cloud service account
+# fill the credentials to credentials.json
+```
+
+Install needed software
+```
 brew install sox
 brew install ffmpeg
 # if you don't have node installed, do these
@@ -61,17 +73,24 @@ brew install ffmpeg
 cd speech_to_translated_text && npm install && cd ..
 cd text_to_speech && pip3 install -r requirements.txt && cd ..
 pip3 install torch torchvision
-# download models from https://drive.google.com/file/d/1n1sPXvT34yXFLT47QZA6FIRGrwMeSsZc/view
-# move those `saved_models` in their corresponding folders to text_to_speech
 pip3 install gTTS
 pip3 install pydub
 # make sure you have python3.7
 ```
 
+Download voice models for text to speech from our [shared models](https://drive.google.com/file/d/1n1sPXvT34yXFLT47QZA6FIRGrwMeSsZc/view).
+
+Move those models to their corresponding folders in `text_to_speec`
+
 ## Usage
+
+Check samplerate of original file
 ```
-# Check samplerate of original file
 ffmpeg -i FILENAME
+```
+
+Run script
+```
 ./run.sh FILENAME SAMPLERATE LANGUAGE_IN LANGUAGE_OUT
 # eg. ./run.sh samples/speech.mp4 44100 fr en
 ```
