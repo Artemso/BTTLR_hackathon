@@ -1,8 +1,11 @@
 # Babel: Speech To translated Speech for Videos
+
 ## About this Project
 Babel, as we call it, has been created over less than 48 hours during [Back to the living room Hackathon](https://backtothelivingroom.tech/). The goal was to created automated solution for video translation while maitaining the original speaker's voice.
 Here is how it turned out:
 [Original Marketing video in German](https://youtu.be/037nONh0l5M) -> [Babel translation to English (40s)](https://youtu.be/nWnjKjztRTs)
+
+**[More information](https://gontjarow.github.io/Babel/)**
 
 ## Prerequisites
 ```
