@@ -1,6 +1,7 @@
-# [Babel](https://gontjarow.github.io/Babel/
-): Speech To translated Speech
-[](samples/babel.jpeg)
+# [Babel](https://gontjarow.github.io/Babel/): Speech To translated Speech
+
+[Tower of Babel](samples/babel.jpeg)
+
 > *The tower of babel is an origin myth explaining why the world's people speak different languages*
 
 Babel uses AI-learning to mimic a foreign speaker’s voice and speech patterns before translating the speaker to your native language.
