@@ -23,9 +23,9 @@ if test -f "$FILE"; then
 		mv translation.json ../translation.json
 		# If above translation is successful then run text to speech translation
 		cd ../
-		cd RTVC_CPU
+		cd text_to_speech
 		if ./demo_cli.py ../temp/$NAME.flac ../translation.json; then
-			cd ../srt_to_speech
+			cd ../sow_speech
 			if ./combine_speech.py ../translation.json ../output $OUT_AUDIO; then
 				mv $OUT_AUDIO ../
 				if ffmpeg -i ../$FILE -i ../$OUT_AUDIO -c:v copy -map 0:v:0 -map 1:a:0 ../new_${NAME}.mp4; then

@@ -19,9 +19,9 @@ translation.json
 *.bcf
 *.toc
 output/*.wav
-RTVC_CPU/encoder/saved_models/*
-RTVC_CPU/synthesizer/saved_models/*
-RTVC_CPU/vocoder/saved_models/*
+text_to_speech/encoder/saved_models/*
+text_to_speech/synthesizer/saved_models/*
+text_to_speech/vocoder/saved_models/*
 *.DS_Storegit
 out_audio.flac
 new*.mp4
