@@ -1,6 +1,6 @@
 # [Babel](https://gontjarow.github.io/Babel/): Speech To translated Speech
 
-[Tower of Babel](samples/babel.jpeg)
+![Tower of Babel](/samples/babel.jpeg)
 
 > *The tower of babel is an origin myth explaining why the world's people speak different languages*
 
